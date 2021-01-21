@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>メディアフロンティアで提出するヤツ</title>
+    <style>
+      .box {
+        vertical-align: middle;
+        width: 800px;
+        height: 600px;
+        background-color: white;
+        font-size: 4rem;
+        text-align: center;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+      }
+
+      .box2 {
+        background-color: skyblue;
+        font-size: 6rem;
+        color: blue;
+        text-align: center;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+      }
+
+      #typed {
+        color: red;
+      }
+
+      #botan {
+        width: 100px;
+        height: 50px;
+      }
+    </style>
+  </head>
+
+
+  <body>
+    <div class="box2">
+      タイピングゲーム　
+      <span id="count"></span>/30
+    </div>
+    <div class="box">
+      <span id="description1">１．表示される単語をタイピングする</span><br />
+      <span id="description2">２．全部で３０問あります</span><br />
+      <span id="JapaneseWord">３．次へを押したら始まる</span><br />
+      <span id="typed"></span><span id="untyped"></span><br />
+      <input
+        name="company"
+        id="botan"
+        type="button"
+        value="次へ"
+        onclick="buttonClick()"
+      />
+    </div>
+
+    <script>
+          var lap=0; //何週目？
+
+          var typeSTART;  //タイマー
+          var typeEND;
+          
+          var stage = 0;  //画面表示
+
+          var correct = 0;　//入力結果
+          var miss = 0;
+
+          var min = 0;
+
+          //画面表示の変更
+          function buttonClick() {
+            if (stage === 0) {　　　　　//stage0
+              stage = 1;
+              description1 = " ";
+              description2 = " ";
+              GameStart();
+              updateTextField();
+              typeSTART = new Date();
+            } else if (stage === 1) {   //stage1
+              finish();
+              updateTextField();
+            } else if (stage === 2) {   //stage2
+              description1 = "１．表示される単語をタイピングする";
+              description2 = "２．全部で３０問あります";
+              JapaneseWord = "３．次へを押したら始まる";
+              untyped = "";
+              stage = 0;
+              updateTextField();
+            }
+          }
+
+          //終わった時
+          function finish() {
+            if(lap>=1){
+              miss= miss-correct;
+            }
+            var keika = typeEND - typeSTART;　　　//タイムの計算
+            var sec = Math.floor(keika / 1000);  
+            var msec = keika % 1000;
+            sec2=sec;
+            min = Math.floor(sec / 60); 
+            sec = sec % 60;
+
+            MissAnswerRate = Math.round(miss/correct*10000)/10000;           //正タイプ率
+            CorrectAnswerRate =Math.round((1 - MissAnswerRate)*10000)/10000;
+            CorrectAnswerRate = CorrectAnswerRate*100;
+
+            average=Math.round(correct/sec2*10)/10;　　　　　　　　　　　　　　//平均キータイプ数
+            description1 = "結果発表";
+            description2 = "正タイプ率:" + CorrectAnswerRate+ " %";
+            JapaneseWord = "平均キータイプ数:" + average+ "回/秒";
+            typed = " ";
+            untyped = "タイム:" + min + "分" + sec + "秒" + msec;
+            stage = 2;
+            lap+=1;
+          }
+
+          const typedField = document.getElementById("typed");
+          const untypedField = document.getElementById("untyped");
+          const wordField = document.getElementById("JapaneseWord");
+          const countField = document.getElementById("count");
+          const description1Field = document.getElementById("description1");
+          const description2Field = document.getElementById("description2");
+          typed = " ";
+          untyped = " ";
+          JapaneseWord = " ";
+          var count = " ";
+
+          const word3 = [
+            "とろろ","なごみ","いやし","リンゴ","バナナ","きずな","こだま","あまた","きらら","すなお",
+            "のどか","たむろ","ほむら","まねき","むじな","かいり","うずら","メジロ","かもめ","ひよこ",
+            "ポテト","カシス","スズメ","ライム","メロン","セロリ","かつお","あなご","アワビ","たかな",
+            "ざいす","ダイス","デフレ","かえる","ねずみ","みかん","からす","たらこ","めだか","ネット",          
+];
+
+          const strs3 = [
+            "tororo","nagomi","iyasi","ringo","banana","kizuna","kodama","atama","kirara","sunao",
+            "nodoka","tamuro","homura","maneki","muzina","kairi","uzura","meziro","kamome","hiyoko",
+            "poteto","kasisu","suzume","raimu","meron","serori","katuo","anago","awabi","takana",
+            "zaisu","daisu","dehure","kaeru","nezumi","mikan","karasu","tarako","medaka","netto",
+          ];
+
+          const word4 = [
+            "もてなし","さんすう","いちねん","せんきょ","きんぎょ","ゆうせい","ふっかつ","しゃみん","ふくしま","さかだち",
+            "たいふう","たいへん","おもちゃ","もちもち","シンボル","ロンドン","イタリア","できない","スパイス","コンドル",
+            "しまうま","すずむし","そろばん","さいころ","たけのこ","なわとび","くだもの","やきいも","みかづき","せいぶつ",
+            "ぼのぼの","きまぐれ","ほろよい","ときめき","のんびり","おっとり","へべれけ","ぽかぽか","さんかく","しつもん",
+          ];
+
+          const strs4 = [
+            "motenasi","sansuu","itinen","senkyo","kingyo","yuusei","hukkatu","syamin","hukusima","sakadati",
+            "taihuu","taihen","omotya","motimoti","sinboru","rondon","itaria","dekinai","supaisu","kondoru",
+            "simauma","suzumusi","soroban","saikoro","takenoko","nawatobi","kudamono","yakiimo","mikaduki","seibutu",
+            "honobono","kimagure","horoyoi","tokimeki","nonbiri","ottori","hebereke","pokapoka","sankaku","situmon",
+          ];
+
+          const word5 = [
+            "おもてなし","こころざし","おにやんま","ひやしんす","とうがらし","ひがんばな","ひざまくら","きつねそば","めくらまし","としょかん",
+            "かんなづき","おおさかふ","じどうしゃ","じてんしゃ","おちゃかい","ジャケット","カンニング","こいのぼり","しゅっさん","カブトムシ",
+            "カメレオン","エネルギー","オルゴール","キリギリス","シャンプー","メロンパン","ランドセル","カブトムシ","カンガルー","たからばこ",
+            "うでどけい","おとしだま","らいんがわ","だえきせん","つかいこむ","ナトリウム","ほたてがい","ユニコーン","ソクラテス","ハイキング",
+          ];
+
+          const strs5 = [
+            "omotenasi","kokorozasi","oniyanma","hiyasinsu","tougarasi","higanbana","hizamakura","kitunesoba","mekuramasi","tosyokan",
+            "kannaduki","oosakahu","jidousya","jitensya","otyakai","jaketto","kanningu","koinobori","syussan","kabutomusi",
+            "kamereon","enerugi-","orugo-ru","kirigirisu","syanpu-","meronpan","randoseru","kabutomusi","kangaru-","takarabako",
+            "udedokei","otosidama","raingawa","daekisen","tukaikomu","natoriumu","hotategai","yuniko-n","sokuratesu","haikingu",
+          ];
+
+          //乱数
+          function randomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+          }
+
+          //画面の表示
+          function updateTextField() {
+            typedField.textContent = typed;
+            untypedField.textContent = untyped;
+            wordField.textContent = JapaneseWord;
+            countField.textContent = count;
+            description1Field.textContent = description1;
+            description2Field.textContent = description2;
+          }
+
+          //次の問題を決める
+          function next() {
+            const idx = randomInt(strs3.length);
+            if (10 >= count) {
+              JapaneseWord = word3[idx];　　//3文字の単語
+              untyped = strs3[idx];
+            } else if (20 >= count) {
+              JapaneseWord = word4[idx];　　//4文字の単語
+              untyped = strs4[idx];
+            } else if (30 >= count) {       //5文字の単語
+              JapaneseWord = word5[idx];
+              untyped = strs5[idx];
+            }
+            typed = "";
+            updateTextField();
+          }
+
+          //タイピングゲームの処理
+          function GameStart() {
+            count = 1;
+            correct = 0;
+            miss = 0;
+
+            document.addEventListener('keydown',function(e){
+              if(stage===1){                               //タイピングの画面の時だけ反応
+                if (e.key !== untyped.substring(0, 1)) {　　//ミスタイピングしたとき
+                  miss += 1;
+                  updateTextField();
+                  return;
+                }
+                typed += untyped.substring(0, 1);　　//正しくタイピングしたとき
+                untyped = untyped.substring(1);
+                correct +=  1;
+                updateTextField();
+
+                if (untyped === "") {         //１単語を打ち終わった時の処理
+                  if (count >= 30) {
+                    typeEND = new Date();
+                    finish();
+                    updateTextField();
+                  } else {
+                    count = count + 1;
+                    next();
+                  }
+                }
+              }
+              });
+            next();
+        }
+    </script>
+  </body>
+</html>
