@@ -1,1 +1,1 @@
-"# RebirthTyping" 
+# RebirthTyping
