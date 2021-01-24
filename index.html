@@ -51,7 +51,7 @@
       <span id="count"></span>/30
     </div>
     <div class="box">
-      <span id="description1">１．表示される単語をタイピングする</span><br />
+      <span id="description1">１．次へを押し、表示される単語をタイピングする</span><br />
       <span id="description2">２．全部で３０問あります</span><br />
       <span id="JapaneseWord">３．次へを押したら始まる</span><br />
       <span id="typed"></span><span id="untyped"></span><br />
@@ -65,183 +65,460 @@
     </div>
 
     <script>
-          var lap=0; //何週目？
+      description1 = "１．表示される単語をタイピングする";
+      description2 = "２．全部で３０問あります";
+      JapaneseWord = "３．次へを押したら始まる";
 
-          var typeSTART;  //タイマー
-          var typeEND;
-          
-          var stage = 0;  //画面表示
+      var nCount;
 
-          var correct = 0;　//入力結果
-          var miss = 0;
+      var kana;
+      var romaji;
 
-          var min = 0;
+      var mondaibun;
 
-          //画面表示の変更
-          function buttonClick() {
-            if (stage === 0) {　　　　　//stage0
-              stage = 1;
-              description1 = " ";
-              description2 = " ";
-              GameStart();
-              updateTextField();
-              typeSTART = new Date();
-            } else if (stage === 1) {   //stage1
-              finish();
-              updateTextField();
-            } else if (stage === 2) {   //stage2
-              description1 = "１．表示される単語をタイピングする";
-              description2 = "２．全部で３０問あります";
-              JapaneseWord = "３．次へを押したら始まる";
-              untyped = "";
-              stage = 0;
-              updateTextField();
+      var typeSTART;  //タイマー
+      var typeEND;
+
+      var stage = 0;  //画面表示
+
+      var correct = 0;　//入力結果
+      var miss = 0;
+
+      var min = 0;
+
+
+      const word3 = [
+        "とろろ","なごみ","いやし","りんご","ばなな","きずな","こだま","あたま","きらら","すなお",
+        "のどか","たむろ","ほむら","まねき","むじな","かいり","うずら","めじろ","かもめ","ひよこ",
+        "ぽてと","かしす","すずめ","らいむ","めろん","せろり","かつお","あなご","あわび","たかな",
+        "ざいす","だいす","でふれ","かえる","ねずみ","みかん","からす","たらこ","めだか","ねっと",          
+      ];
+
+      const word4 = [
+        "もてなし","さんすう","いちねん","せんきょ","きんぎょ","ゆうせい","ふっかつ","しゃみん","ふくしま","さかだち",
+        "たいふう","たいへん","おもちゃ","もちもち","しんぼる","ろんどん","いたりあ","できない","すぱいす","こんどる",
+        "しまうま","すずむし","そろばん","さいころ","たけのこ","なわとび","くだもの","やきいも","みかづき","せいぶつ",
+        "ぼのぼの","きまぐれ","ほろよい","ときめき","のんびり","おっとり","へべれけ","ぽかぽか","さんかく","しつもん",
+      ];
+
+      const word5 = [
+        "おもてなし","こころざし","おにやんま","ひやしんす","とうがらし","ひがんばな","ひざまくら","きつねそば","めくらまし","としょかん",
+        "かんなづき","おおさかふ","じどうしゃ","じてんしゃ","おちゃかい","じゃけっと","かんにんぐ","こいのぼり","しゅっさん","かぶとむし",
+        "かめれおん","えねるぎー","おるごーる","きりぎりす","しゃんぷー","めろんぱん","らんどせる","かぶとむし","かんがるー","たからばこ",
+        "うでどけい","おとしだま","らいんがわ","だえきせん","つかいこむ","なとりうむ","ほたてがい","ゆにこーん","そくらてす","はいきんぐ",
+      ];
+
+      const kana1 = [
+        "あ","い","う","え","お","か","き","く","け","こ","さ","し","す","せ","そ","た","ち","つ","て","と",
+        "な","に","ぬ","ね","の","は","ひ","ふ","へ","ほ","ま","み","む","め","も",
+        "や","ゆ","よ",
+        "ら","り","る","れ","ろ","わ","うぃ","うぇ","を","ん","ヴ",
+        "が","ぎ","ぐ","げ","ご","ざ","じ","ず","ぜ","ぞ","だ","ぢ","づ","で","ど","ば","び","ぶ","べ","ぼ",
+        "ぱ","ぴ","ぷ","ぺ","ぽ","ー","ぁ","ぃ","ぅ","ぇ","ぉ","ゃ","ゅ","ょ","っ",
+      ];
+
+      const alphabet1 = [
+        "a","i","u","e","o","ka","ki","ku","ke","ko","sa","si","su","se","so","ta","ti","tu","te","to",
+        "na","ni","nu","ne","no","ha","hi","hu","he","ho","ma","mi","mu","me","mo",
+        "ya","yu","yo",
+        "ra","ri","ru","re","ro","wa","wi","we","wo","n","vu",
+        "ga","gi","gu","ge","go","za","zi","zu","ze","zo","da","di","du","de","do","ba","bi","bu","be","bo",
+        "pa","pi","pu","pe","po","-","la","li","lu","le","lo","lya","lyu","lyo","ltu",
+      ];
+
+      const kana2 = [
+        "きゃ","きぃ","きゅ","きぇ","きょ","しゃ","しぃ","しゅ","しぇ","しょ",
+        "ちゃ","ちぃ","ちゅ","ちぇ","ちょ","にゃ","にぃ","にゅ","にぇ","にょ","ひゃ","ひぃ","ひゅ","ひぇ","ひょ",
+        "みゃ","みぃ","みゅ","みぇ","みょ","りゃ","りぃ","りゅ","りぇ","りょ","ふぁ","ふぃ","ふぇ","ふぉ",
+        "ぎゃ","ぎぃ","ぎゅ","ぎぇ","ぎょ","じゃ","じぃ","じゅ","じぇ","じょ",
+        "ぢゃ","ぢぃ","ぢゅ","ぢぇ","ぢょ","びゃ","びぃ","びゅ","びぇ","びょ","ぴゃ","ぴぃ","ぴゅ","ぴぇ","ぴょ",
+      ];
+
+      const alphabet2 = [
+        "kya","kyi","kyu","kye","kyo","sya","syi","syu","sye","syo",
+        "tya","tyi","tyu","tye","tyo","nya","nyi","nyu","nye","nyo","hya","hyi","hyu","hye","hyo",
+        "mya","myi","myu","mye","myo","rya","ryi","ryu","rye","ryo","fa","fi","fe","fo",
+        "gya","gyi","gyu","gye","gyo","zya","zyi","zyu","zye","zyo",
+        "dya","dyi","dyu","dye","dyo","bya","byi","byu","bye","byo","pya","pyi","pyu","pye","pyo",
+      ];
+
+      const consonant=["a","i","u","e","o",];              //タイプ処理に使います
+
+      const simple2 =["ti","hu","la","li","lu","le","lo","zi",];　　//左 １文字で変わる二文字
+      const another2=["chi","fu","xa","xi","xu","xe","xo","ji",];
+
+      const simple3 =["lya","lyu","lyo","ltu","zya","zyo","ltu"];        //左 １文字で変わる三文字
+      const another3=["xya","xyu","xyo","xtu","ja","jo","xtu",];
+
+      const vowel=["k","s","t","n","h","m","r","g","z","d","b","p",];//母音
+
+      const SmallYLine=["lya","li","lyu","le","lyo",];　　//小さい や行
+
+
+      const typedField = document.getElementById("typed");
+      const untypedField = document.getElementById("untyped");
+      const wordField = document.getElementById("JapaneseWord");
+      const countField = document.getElementById("count");
+      const description1Field = document.getElementById("description1");
+      const description2Field = document.getElementById("description2");
+      typed = "";
+      untyped = "";
+      JapaneseWord = "";
+      var count = "";          
+
+      var front;
+
+      //画面表示の変更
+      function buttonClick() {
+        if (stage === 0) {　　　　　//stage0
+          stage = 1;
+          reset();
+          next();
+          updateTextField();
+          typeSTART = new Date();
+        } else if (stage === 1) {   //stage1
+          finish();
+          updateTextField();
+        } else if (stage === 2) {   //stage2
+          description1 = "１．次へを押し、表示される単語をタイピングする";
+          description2 = "２．全部で３０問あります";
+          JapaneseWord = "３．次へを押したら始まる";
+          untyped = "";
+          stage = 0;
+          updateTextField();
+        }
+      }
+
+      function sleep(waitMsec) {
+        var startMsec = new Date();
+        // 指定ミリ秒間だけループさせる（CPUは常にビジー状態）
+        while (new Date() - startMsec < waitMsec);
+      }
+
+      function reset(){
+        UsedWord.length=0;
+        description1 = "";
+        description2 = "";
+        count = 1;
+        correct = 0;
+        miss = 0;
+        total = 0;
+        average=0;
+        MissAnswerRate=0;
+        CorrectAnswerRate=0;
+        front= 100;
+      }
+
+      //終わった時
+      function finish() {
+        typeEND = new Date();
+        var keika = typeEND - typeSTART;　　　//タイムの計算
+        var sec = Math.floor(keika / 1000);  
+        var msec = keika % 1000;
+        sec2=sec;
+        min = Math.floor(sec / 60); 
+        sec = sec % 60;
+
+        var total = miss+correct;
+
+        if(correct==0){
+          CorrectAnswerRate=0;
+          avarege = 0;                                                //平均キータイプ数
+        }else if(miss==0){
+          CorrectAnswerRate=100;
+          average=Math.round(correct/sec2*10)/10;                      //平均キータイプ数
+        }else{
+          MissAnswerRate = Math.round(miss/total*10000)/10000;          //正タイプ率
+          CorrectAnswerRate =Math.round((1 - MissAnswerRate)*10000)/10000;
+          CorrectAnswerRate =CorrectAnswerRate*100;
+          CorrectAnswerRate = Math.round(CorrectAnswerRate*100)/100;
+          average=Math.round(correct/sec2*10)/10;                         //平均キータイプ数
+        }
+
+        description1 = "結果発表";
+        description2 = "正タイプ率:" + CorrectAnswerRate+ " %";
+        JapaneseWord = "平均キータイプ数:" + average+ "回/秒";
+        typed = " ";
+        untyped = "タイム:" + min + "分" + sec + "秒" + msec;
+        stage = 2;
+      }
+
+      //乱数
+      function randomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+      }
+
+      //画面の表示
+      function updateTextField() {
+        typedField.textContent = typed;
+        untypedField.textContent = untyped;
+        wordField.textContent = JapaneseWord;
+        countField.textContent = count;
+        description1Field.textContent = description1;
+        description2Field.textContent = description2;
+      }
+
+      //次の問題を決める
+      function next() {
+        var idx = randomInt(word3.length);
+
+        for( ; ; ){
+          if(idx != front)break;
+            var idx = randomInt(word3.length);    
             }
-          }
-
-          //終わった時
-          function finish() {
-            if(lap>=1){
-              miss= miss-correct;
-            }
-            var keika = typeEND - typeSTART;　　　//タイムの計算
-            var sec = Math.floor(keika / 1000);  
-            var msec = keika % 1000;
-            sec2=sec;
-            min = Math.floor(sec / 60); 
-            sec = sec % 60;
-
-            MissAnswerRate = Math.round(miss/correct*10000)/10000;           //正タイプ率
-            CorrectAnswerRate =Math.round((1 - MissAnswerRate)*10000)/10000;
-            CorrectAnswerRate = CorrectAnswerRate*100;
-
-            average=Math.round(correct/sec2*10)/10;　　　　　　　　　　　　　　//平均キータイプ数
-            description1 = "結果発表";
-            description2 = "正タイプ率:" + CorrectAnswerRate+ " %";
-            JapaneseWord = "平均キータイプ数:" + average+ "回/秒";
-            typed = " ";
-            untyped = "タイム:" + min + "分" + sec + "秒" + msec;
-            stage = 2;
-            lap+=1;
-          }
-
-          const typedField = document.getElementById("typed");
-          const untypedField = document.getElementById("untyped");
-          const wordField = document.getElementById("JapaneseWord");
-          const countField = document.getElementById("count");
-          const description1Field = document.getElementById("description1");
-          const description2Field = document.getElementById("description2");
-          typed = " ";
-          untyped = " ";
-          JapaneseWord = " ";
-          var count = " ";
-
-          const word3 = [
-            "とろろ","なごみ","いやし","リンゴ","バナナ","きずな","こだま","あたま","きらら","すなお",
-            "のどか","たむろ","ほむら","まねき","むじな","かいり","うずら","メジロ","かもめ","ひよこ",
-            "ポテト","カシス","スズメ","ライム","メロン","セロリ","かつお","あなご","アワビ","たかな",
-            "ざいす","ダイス","デフレ","かえる","ねずみ","みかん","からす","たらこ","めだか","ネット",          
-];
-
-          const strs3 = [
-            "tororo","nagomi","iyasi","ringo","banana","kizuna","kodama","atama","kirara","sunao",
-            "nodoka","tamuro","homura","maneki","muzina","kairi","uzura","meziro","kamome","hiyoko",
-            "poteto","kasisu","suzume","raimu","meron","serori","katuo","anago","awabi","takana",
-            "zaisu","daisu","dehure","kaeru","nezumi","mikan","karasu","tarako","medaka","netto",
-          ];
-
-          const word4 = [
-            "もてなし","さんすう","いちねん","せんきょ","きんぎょ","ゆうせい","ふっかつ","しゃみん","ふくしま","さかだち",
-            "たいふう","たいへん","おもちゃ","もちもち","シンボル","ロンドン","イタリア","できない","スパイス","コンドル",
-            "しまうま","すずむし","そろばん","さいころ","たけのこ","なわとび","くだもの","やきいも","みかづき","せいぶつ",
-            "ぼのぼの","きまぐれ","ほろよい","ときめき","のんびり","おっとり","へべれけ","ぽかぽか","さんかく","しつもん",
-          ];
-
-          const strs4 = [
-            "motenasi","sansuu","itinen","senkyo","kingyo","yuusei","hukkatu","syamin","hukusima","sakadati",
-            "taihuu","taihen","omotya","motimoti","sinboru","rondon","itaria","dekinai","supaisu","kondoru",
-            "simauma","suzumusi","soroban","saikoro","takenoko","nawatobi","kudamono","yakiimo","mikaduki","seibutu",
-            "honobono","kimagure","horoyoi","tokimeki","nonbiri","ottori","hebereke","pokapoka","sankaku","situmon",
-          ];
-
-          const word5 = [
-            "おもてなし","こころざし","おにやんま","ひやしんす","とうがらし","ひがんばな","ひざまくら","きつねそば","めくらまし","としょかん",
-            "かんなづき","おおさかふ","じどうしゃ","じてんしゃ","おちゃかい","ジャケット","カンニング","こいのぼり","しゅっさん","カブトムシ",
-            "カメレオン","エネルギー","オルゴール","キリギリス","シャンプー","メロンパン","ランドセル","カブトムシ","カンガルー","たからばこ",
-            "うでどけい","おとしだま","らいんがわ","だえきせん","つかいこむ","ナトリウム","ほたてがい","ユニコーン","ソクラテス","ハイキング",
-          ];
-
-          const strs5 = [
-            "omotenasi","kokorozasi","oniyanma","hiyasinsu","tougarasi","higanbana","hizamakura","kitunesoba","mekuramasi","tosyokan",
-            "kannaduki","oosakahu","jidousya","jitensya","otyakai","jaketto","kanningu","koinobori","syussan","kabutomusi",
-            "kamereon","enerugi-","orugo-ru","kirigirisu","syanpu-","meronpan","randoseru","kabutomusi","kangaru-","takarabako",
-            "udedokei","otosidama","raingawa","daekisen","tukaikomu","natoriumu","hotategai","yuniko-n","sokuratesu","haikingu",
-          ];
-
-          //乱数
-          function randomInt(max) {
-            return Math.floor(Math.random() * Math.floor(max));
-          }
-
-          //画面の表示
-          function updateTextField() {
-            typedField.textContent = typed;
-            untypedField.textContent = untyped;
-            wordField.textContent = JapaneseWord;
-            countField.textContent = count;
-            description1Field.textContent = description1;
-            description2Field.textContent = description2;
-          }
-
-          //次の問題を決める
-          function next() {
-            const idx = randomInt(strs3.length);
-            if (10 >= count) {
+          if (10 >= count) {
               JapaneseWord = word3[idx];　　//3文字の単語
-              untyped = strs3[idx];
-            } else if (20 >= count) {
+          } else if (20 >= count) {
               JapaneseWord = word4[idx];　　//4文字の単語
-              untyped = strs4[idx];
-            } else if (30 >= count) {       //5文字の単語
+          } else if (30 >= count) {       //5文字の単語
               JapaneseWord = word5[idx];
-              untyped = strs5[idx];
-            }
-            typed = "";
-            updateTextField();
           }
+            front=idx;
 
-          //タイピングゲームの処理
-          function GameStart() {
-            count = 1;
-            correct = 0;
-            miss = 0;
+        mondaibun=JapaneseWord;
+        if(mondaibun===JapaneseWord){
+        }
+      
 
-            document.addEventListener('keydown',function(e){
-              if(stage===1){                               //タイピングの画面の時だけ反応
-                if (e.key !== untyped.substring(0, 1)) {　　//ミスタイピングしたとき
-                  miss += 1;
-                  updateTextField();
-                  return;
+        var stopsan=untyped;
+
+        for(var j = 0; j < 5; j++){
+          stopsan=untyped;
+          if(mondaibun!==""){
+
+            if("っ"===mondaibun.substring(0,1)){　　　　　//１文字目が「"っ"＋kana2」だった時の処理
+            　
+              for(var i = 0; i < kana2.length; i++){
+                if(kana2[i]===mondaibun.substring(1, 3)){
+                  untyped += alphabet2[i].substring(0,1)+alphabet2[i];
+                  mondaibun = mondaibun.substring(3);
+                  i= 200;
                 }
-                typed += untyped.substring(0, 1);　　//正しくタイピングしたとき
-                untyped = untyped.substring(1);
-                correct +=  1;
-                updateTextField();
+              }
 
-                if (untyped === "") {         //１単語を打ち終わった時の処理
-                  if (count >= 30) {
-                    typeEND = new Date();
-                    finish();
-                    updateTextField();
-                  } else {
-                    count = count + 1;
-                    next();
+              if(stopsan===untyped){
+                for(var i = 0; i < kana1.length; i++){      //１文字目が「"っ"＋kana1」だった時の処理　
+                  if(kana1[i]===mondaibun.substring(1, 2)){
+                    untyped += alphabet1[i].substring(0,1)+alphabet1[i];
+                    mondaibun = mondaibun.substring(2);
+                    i= 200;
                   }
                 }
               }
-              });
-            next();
+            }
+
+            if(stopsan===untyped){
+              for(var i = 0; i < kana2.length; i++){        //
+                if(kana2[i]===mondaibun.substring(0, 2)){
+                  untyped += alphabet2[i];
+                  mondaibun = mondaibun.substring(2);
+                  i= 200;
+                }
+              }
+            }
+
+            if(stopsan===untyped){
+              for(var i = 0; i < kana1.length; i++){
+                if(kana1[i]===mondaibun.substring(0, 1)){
+                  untyped += alphabet1[i];
+                  mondaibun = mondaibun.substring(1);
+                  i= 200;
+                }
+              }
+            }
+          }
         }
+        typed = "";
+        updateTextField();
+      }
+
+
+      //タイピングゲームの処理
+document.addEventListener('keydown',function(e){
+  if(stage===1){                               //タイピングの画面の時だけ反応
+    var first=untyped.substring(0,1);
+    var second=untyped.substring(1,2);
+
+    var chenge2=untyped.substring(0,2);
+    var chenge3=untyped.substring(0,3);
+    var back  = typed.slice(-1);
+    var back2 = typed.slice(-2,-1);
+    var back3 = typed.slice(-3,-2);
+
+    if(e.key==="n"){
+      if(back==="n"){                    // 「n + 子音」で"ｎ"を増やさない処理
+      if(back2!=="n"){
+        if(untyped.substring(0,1)==="a"||untyped.substring(0,1)==="i"
+          　　　　　　　　||untyped.substring(0,1)==="u"||untyped.substring(0,1)==="e"||untyped.substring(0,1)==="o"){
+          if(e.key==="n"){
+            miss+=1;
+            return;
+          }
+        }
+
+        if(untyped.substring(0,1)!=="a" && untyped.substring(0,1)!=="i" 　　　　　　　　　　　　　　　 // 「n + 母音」で"n"を増やす処理
+          　　　　　　　　&& untyped.substring(0,1)!=="u" && untyped.substring(0,1)!=="e" && untyped.substring(0,1)!=="o"){ 
+          if(e.key==="n"){
+            if(untyped.substring(0,1)==="n"){
+              typed+=untyped.substring(0,1);
+              untyped=untyped.substring(1);
+              correct+=1;
+              updateTextField();
+              return;
+            }
+            else if(untyped.substring(0,1)!=="n"){
+              typed+="n";
+              correct+=1;
+              updateTextField();
+              return;
+            }
+          }
+        }
+      }
+    if(back2==="n"){　　　　　　　　　　　　　　　　　　　　　// 「ん＋な行」の時の処理
+      if(back3!=="n"){
+        if(untyped.substring(0,1)==="a"||untyped.substring(0,1)==="i"
+          ||untyped.substring(0,1)==="u"||untyped.substring(0,1)==="e"||untyped.substring(0,1)==="o"){
+          if(e.key==="n"){
+            typed+="n";
+            correct+=1;
+            updateTextField();
+            return;
+          }
+        }
+      }
+    }
+  }
+}
+
+    for(var i = 0; i < another3.length; i++){      //もともと３文字の別の打ち方
+      if(simple3[i]===chenge3){
+        if(e.key === another3[i].substring(0, 1)){
+          untyped= untyped.slice(3);
+          untyped=another3[i] + untyped;
+          typed += untyped.substring(0, 1);　　//正しくタイピングしたとき
+          untyped = untyped.substring(1);
+          correct +=  1;
+          updateTextField();
+          return;
+        }
+      }
+    }
+
+    for(var i = 0; i < another2.length; i++){　　　　//元々２文字の別の打ち方
+      if(simple2[i]===chenge2){
+        if(e.key === another2[i].substring(0, 1)){
+          untyped= untyped.slice(2);
+          untyped=another2[i] + untyped;
+          typed += untyped.substring(0, 1);　　//正しくタイピングしたとき
+          untyped = untyped.substring(1);
+          correct +=  1;
+          updateTextField();
+          return;
+        }
+      }
+    }
+
+    if(back==="s"){      
+      if(e.key ==="h"){               //siをshiにする処理
+        if(untyped.substring(0,1)==="i"){
+          typed +="h";
+          correct +=  1;
+          updateTextField();
+          return;
+        }
+      }
+    }
+
+    if(back==="t"){                   //tuをtsuにする処理
+      if(e.key==="s"){
+        if(untyped.substring(0,1)==="u"){
+          typed+="s";
+          correct +=  1;
+          updateTextField();
+          return;
+        }
+      }
+    }
+
+    function SmallTu(){
+      typed+=e.key;
+      untyped=untyped.slice(2);
+      untyped="tu"+untyped;
+      correct +=1;
+      updateTextField();
+      return;
+    };
+
+    if(untyped.substring(0,1)===untyped.substring(1,2)){
+      if(untyped.substring(0,1)!=="n"){
+        for (i=0;i<vowel.length;i++){
+          if(untyped.substring(0,1)===vowel[i]){
+            if(e.key==="l"){
+              SmallTu();
+            }else if(e.key==="x"){
+              SmallTu();
+            }
+          }          
+        }
+      }
+    }
+
+    if(untyped.substring(0,1)==="y"){    //「"母音"＋"y"+"子音"」を「"母音"+"子音"+"ly"+"子音"」にする処理  例）kya　➡　ki+lya
+
+      for(i=0;i<vowel.length;i++){     //母音があるかないか
+        if(back===vowel[i]){
+
+          for(j=0;j<consonant.length;j++){　　　　　　　　//子音があるかないか
+            if(untyped.substring(1,2)===consonant[j]){
+
+              if(e.key==="i"){
+                typed+="i";
+                untyped=untyped.slice(2);
+                untyped=SmallYLine[j]+untyped;
+                correct +=  1;
+                updateTextField();
+                return;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if(first===second){
+      if (e.key === untyped.substring(0, 1)) {　　//アルファベットが２回続く時、処理を遅らせる　例）natto
+        typed += untyped.substring(0, 1);　　//正しくタイピングしたとき
+        untyped = untyped.substring(1);
+        correct +=  1;
+        updateTextField();
+        sleep(50);
+        return;
+      }
+    }
+
+    if (e.key !== untyped.substring(0, 1)) {　　//ミスタイピングしたとき
+      miss += 1;
+      updateTextField();
+      return;
+    }
+    typed += untyped.substring(0, 1);　　//正しくタイピングしたとき
+    untyped = untyped.substring(1);
+    correct +=  1;
+    updateTextField();
+
+    if (untyped === "") {         //１単語を打ち終わった時の処理
+      if (count >= 30) {
+        finish();
+        updateTextField();
+      } else {
+        count = count + 1;
+        next();
+      }
+    }
+  }
+});
+      //next();
     </script>
   </body>
 </html>
