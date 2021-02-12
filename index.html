@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>タイピングゲーム</title>
     <style>
+      
       .box {
         vertical-align: middle;
         width: 800px;
@@ -21,9 +22,9 @@
       }
 
       .box2 {
-        background-color: skyblue;
+        background-color:#c0c0c0;
         font-size: 6rem;
-        color: blue;
+        color: rgb(121, 82, 82);
         text-align: center;
         position: absolute;
         top: 0;
@@ -33,13 +34,30 @@
         margin: auto;
       }
 
+      .box3{
+        width: 100px;
+        height: 50px;
+        position: absolute;
+        margin: auto;
+        right:0;
+        left:0;
+        bottom:80px;
+      }
+
       #typed {
         color: red;
+      }
+
+      #typed_Japanese{
+        color:red;
       }
 
       #botan {
         width: 100px;
         height: 50px;
+      }
+      #botan:hover{
+        background-color:	#d0d0d0;
       }
     </style>
   </head>
@@ -50,11 +68,15 @@
       タイピングゲーム　
       <span id="count"></span>/30
     </div>
+
     <div class="box">
       <span id="description1">１．次へを押し、表示される単語をタイピングする</span><br />
       <span id="description2">２．全部で３０問あります</span><br />
-      <span id="JapaneseWord">３．次へを押したら始まる</span><br />
+      <span id= "typed_Japanese"></span><span id="JapaneseWord">３．次へを押したら始まる</span><br />
       <span id="typed"></span><span id="untyped"></span><br />
+    </div>
+
+    <div class ="box3">
       <input
         name="company"
         id="botan"
@@ -69,11 +91,6 @@
       description2 = "２．全部で３０問あります";
       JapaneseWord = "３．次へを押したら始まる";
 
-      var nCount;
-
-      var kana;
-      var romaji;
-
       var mondaibun;
 
       var typeSTART;  //タイマー
@@ -84,37 +101,46 @@
       var correct = 0;　//入力結果
       var miss = 0;
 
-      var min = 0;
+      var mCount=0;   //不一致文字カウント
 
 
       const word3 = [
-        "とろろ","なごみ","いやし","りんご","ばなな","きずな","こだま","あたま","きらら","すなお",
-        "のどか","たむろ","ほむら","まねき","むじな","かいり","うずら","めじろ","かもめ","ひよこ",
-        "ぽてと","かしす","すずめ","らいむ","めろん","せろり","かつお","あなご","あわび","たかな",
-        "ざいす","だいす","でふれ","かえる","ねずみ","みかん","からす","たらこ","めだか","ねっと",          
+        "しけん","しらが","いやし","リンゴ","バナナ","きずな","ふじみ","あたま","きらら","すなお",
+        "のどか","むかし","ちこく","つがい","マニア","かいり","うずら","メジロ","カモメ","ひよこ",
+        "ポテト","ワイン","スズメ","ライム","メロン","セロリ","かつお","あなご","あわび","たかな",
+        "ざいす","ダイス","デフレ","カエル","ねずみ","みかん","カラス","たらこ","メダカ","ネット",          
       ];
 
       const word4 = [
-        "もてなし","さんすう","いちねん","せんきょ","きんぎょ","ゆうせい","ふっかつ","しゃみん","ふくしま","さかだち",
-        "たいふう","たいへん","おもちゃ","もちもち","しんぼる","ろんどん","いたりあ","できない","すぱいす","こんどる",
-        "しまうま","すずむし","そろばん","さいころ","たけのこ","なわとび","くだもの","やきいも","みかづき","せいぶつ",
-        "ぼのぼの","きまぐれ","ほろよい","ときめき","のんびり","おっとり","へべれけ","ぽかぽか","さんかく","しつもん",
+        "もてなす","ばけもの","いちねん","せんきょ","きんぎょ","ゆうせい","ふっかつ","ちゃわん","ふくしま","さかだち",
+        "たいふう","たいへん","オモチャ","しゃしん","シンボル","ロンドン","イタリア","りょこう","スパイス","コンドル",
+        "しまうま","すずむし","そろばん","ぜいきん","たけのこ","なわとび","くだもの","やきいも","みかづき","せいぶつ",
+        "にっこう","きまぐれ","ほろよい","にんじん","のんびり","まったり","へべれけ","ファイブ","ちゃんこ","しつもん",
       ];
 
       const word5 = [
-        "おもてなし","こころざし","おにやんま","ひやしんす","とうがらし","ひがんばな","ひざまくら","きつねそば","めくらまし","としょかん",
-        "かんなづき","おおさかふ","じどうしゃ","じてんしゃ","おちゃかい","じゃけっと","かんにんぐ","こいのぼり","しゅっさん","かぶとむし",
-        "かめれおん","えねるぎー","おるごーる","きりぎりす","しゃんぷー","めろんぱん","らんどせる","かぶとむし","かんがるー","たからばこ",
-        "うでどけい","おとしだま","らいんがわ","だえきせん","つかいこむ","なとりうむ","ほたてがい","ゆにこーん","そくらてす","はいきんぐ",
+        "おもてなし","こころざし","おにやんま","しょうかい","とうがらし","ひがんばな","バスケット","きつねそば","めくらまし","としょかん",
+        "かんなづき","おおさかふ","じどうしゃ","じてんしゃ","おちゃかい","ジャケット","カンニング","こいのぼり","しゅっさん","カブトムシ",
+        "カメレオン","エネルギー","オルゴール","きりぎりす","シャンプー","メロンパン","ランドセル","チャンネル","かんがるー","たからばこ",
+        "うでどけい","おとしだま","ラインがわ","コミックス","かじゅえん","ナトリウム","ホタテがい","ユニコーン","ソクラテス","バイキング",
       ];
 
-      const kana1 = [
+      const hira1 = [
         "あ","い","う","え","お","か","き","く","け","こ","さ","し","す","せ","そ","た","ち","つ","て","と",
         "な","に","ぬ","ね","の","は","ひ","ふ","へ","ほ","ま","み","む","め","も",
         "や","ゆ","よ",
-        "ら","り","る","れ","ろ","わ","うぃ","うぇ","を","ん","ヴ",
+        "ら","り","る","れ","ろ","わ","うぃ","うぇ","を","ん","ゔ",
         "が","ぎ","ぐ","げ","ご","ざ","じ","ず","ぜ","ぞ","だ","ぢ","づ","で","ど","ば","び","ぶ","べ","ぼ",
         "ぱ","ぴ","ぷ","ぺ","ぽ","ー","ぁ","ぃ","ぅ","ぇ","ぉ","ゃ","ゅ","ょ","っ",
+      ];
+
+      const kana1=[
+        "ア","イ","ウ","エ","オ","カ","キ","ク","ケ","コ","サ","シ","ス","セ","ソ","タ","チ","ツ","テ","ト",
+        "ナ","ニ","ヌ","ネ","ノ","ハ","ヒ","フ","ヘ","ホ","マ","ミ","ム","メ","モ",
+        "ヤ","ユ","ヨ",
+        "ラ","リ","ル","レ","ロ","ワ","ウィ","ウェ","ヲ","ン","ヴ",
+        "ガ","ギ","グ","ゲ","ゴ","ザ","ジ","ズ","ゼ","ゾ","ダ","ヂ","ヅ","デ","ド","バ","ビ","ブ","ベ","ボ",
+        "パ","ピ","プ","ペ","ポ","ー","ァ","ィ","ゥ","ェ","ォ","ャ","ュ","ョ","ッ",
       ];
 
       const alphabet1 = [
@@ -126,13 +152,24 @@
         "pa","pi","pu","pe","po","-","la","li","lu","le","lo","lya","lyu","lyo","ltu",
       ];
 
-      const kana2 = [
+      const hira2 = [
         "きゃ","きぃ","きゅ","きぇ","きょ","しゃ","しぃ","しゅ","しぇ","しょ",
         "ちゃ","ちぃ","ちゅ","ちぇ","ちょ","にゃ","にぃ","にゅ","にぇ","にょ","ひゃ","ひぃ","ひゅ","ひぇ","ひょ",
         "みゃ","みぃ","みゅ","みぇ","みょ","りゃ","りぃ","りゅ","りぇ","りょ","ふぁ","ふぃ","ふぇ","ふぉ",
         "ぎゃ","ぎぃ","ぎゅ","ぎぇ","ぎょ","じゃ","じぃ","じゅ","じぇ","じょ",
         "ぢゃ","ぢぃ","ぢゅ","ぢぇ","ぢょ","びゃ","びぃ","びゅ","びぇ","びょ","ぴゃ","ぴぃ","ぴゅ","ぴぇ","ぴょ",
+        "ヴァ","ヴィ","ヴェ","ヴォ",
       ];
+
+      const kana2 = [
+        "キャ","キィ","キュ","キェ","キョ","シャ","シィ","シュ","シェ","ショ",
+        "チャ","チィ","チュ","チェ","チョ","ニャ","ニィ","ニュ","ニェ","ニョ","ヒャ","ヒィ","ヒュ","ヒェ","ヒョ",
+        "ミャ","ミィ","ミュ","ミェ","ミョ","リャ","リィ","リュ","リェ","リョ","ファ","フィ","フェ","フォ",
+        "ギャ","ギィ","ギュ","ギェ","ギョ","ジャ","ジィ","ジュ","ジェ","ジョ",
+        "ヂャ","ヂィ","ヂュ","ヂェ","ヂョ","ビャ","ビィ","ビュ","ビェ","ビョ","ピャ","ピィ","ピュ","ピェ","ピョ",
+        "ヴァ","ヴィ","ヴェ","ヴォ",
+      ]
+
 
       const alphabet2 = [
         "kya","kyi","kyu","kye","kyo","sya","syi","syu","sye","syo",
@@ -142,18 +179,79 @@
         "dya","dyi","dyu","dye","dyo","bya","byi","byu","bye","byo","pya","pyi","pyu","pye","pyo",
       ];
 
-      const consonant=["a","i","u","e","o",];              //タイプ処理に使います
+      const ReHira1=["あ","い","う","え","お","ー","ん",];                         //日本語表記を赤くするための配列
+      const Rekana1=["ア","イ","ウ","エ","オ","ー","ン",];
+      const ReHira2=[
+        "か","き","く","け","こ","さ","し","す","せ","そ","た","ち","つ","て","と",
+        "な","に","ぬ","ね","の","は","ひ","ふ","へ","ほ","ま","み","む","め","も",
+        "や","ゆ","よ",
+        "ら","り","る","れ","ろ","わ","うぃ","うぇ","を","ゔ",
+        "が","ぎ","ぐ","げ","ご","ざ","じ","ず","ぜ","ぞ","だ","ぢ","づ","で","ど","ば","び","ぶ","べ","ぼ",
+        "ぱ","ぴ","ぷ","ぺ","ぽ","ぁ","ぃ","ぅ","ぇ","ぉ","ヴァ","ヴィ","ヴェ","ヴォ",
+        "ふぁ","ふぃ","ふぇ","ふぉ","ふ","ぁ","ぃ","ぅ","ぇ","ぉ","じ","か","し","く","せ","こ","じゃ","じゅ","じょ",];
+      const Rekana2=[
+        "カ","キ","ク","ケ","コ","サ","シ","ス","セ","ソ","タ","チ","ツ","テ","ト",
+        "ナ","ニ","ヌ","ネ","ノ","ハ","ヒ","フ","ヘ","ホ","マ","ミ","ム","メ","モ",
+        "ヤ","ユ","ヨ",
+        "ラ","リ","ル","レ","ロ","ワ","ウィ","ウェ","ヲ","ヴ",
+        "ガ","ギ","グ","ゲ","ゴ","ザ","ジ","ズ","ゼ","ゾ","ダ","ヂ","ヅ","デ","ド","バ","ビ","ブ","ベ","ボ",
+        "パ","ピ","プ","ペ","ポ","ァ","ィ","ゥ","ェ","ォ","ヴァ","ヴィ","ヴェ","ヴォ",
+        "ファ","フィ","フェ","フォ","フ","ァ","ィ","ゥ","ェ","ォ","ジ","カ","シ","ク","セ","コ","ジャ","ジュ","ジョ",
+      ];
+      const ReHira3=[
+        "ゃ","ゅ","ょ","っ",
+        "きゃ","きぃ","きゅ","きぇ","きょ","しゃ","しぃ","しゅ","しぇ","しょ",
+        "ちゃ","ちぃ","ちゅ","ちぇ","ちょ","にゃ","にぃ","にゅ","にぇ","にょ","ひゃ","ひぃ","ひゅ","ひぇ","ひょ",
+        "みゃ","みぃ","みゅ","みぇ","みょ","りゃ","りぃ","りゅ","りぇ","りょ",
+        "ぎゃ","ぎぃ","ぎゅ","ぎぇ","ぎょ","じゃ","じぃ","じゅ","じぇ","じょ",
+        "ぢゃ","ぢぃ","ぢゅ","ぢぇ","ぢょ","びゃ","びぃ","びゅ","びぇ","びょ","ぴゃ","ぴぃ","ぴゅ","ぴぇ","ぴょ",
+        "ち","ゃ","ゅ","ょ","っ","っ","ちゃ","ちぃ","ちゅ","ちぇ","ちょ","つ","し",];
+      const Rekana3=[
+        "ャ","ュ","ョ","ッ",
+        "キャ","キィ","キュ","キェ","キョ","シャ","シィ","シュ","シェ","ショ",
+        "チャ","チィ","チュ","チェ","チョ","ニャ","ニィ","ニュ","ニェ","ニョ","ヒャ","ヒィ","ヒュ","ヒェ","ヒョ",
+        "ミャ","ミィ","ミュ","ミェ","ミョ","リャ","リィ","リュ","リェ","リョ",
+        "ギャ","ギィ","ギュ","ギェ","ギョ","ジャ","ジィ","ジュ","ジェ","ジョ",
+        "ヂャ","ヂィ","ヂュ","ヂェ","ヂョ","ビャ","ビィ","ビュ","ビェ","ビョ","ピャ","ピィ","ピュ","ピェ","ピョ",
+        "チ","ャ","ュ","ョ","ッ","ッ","チャ","チィ","チュ","チェ","チョ","ツ","シ",
+      ];
 
-      const simple2 =["ti","hu","la","li","lu","le","lo","zi",];　　//左 １文字で変わる二文字
-      const another2=["chi","fu","xa","xi","xu","xe","xo","ji",];
+      const reAlphabet1=["a","i","u","e","o","-","n",];
+      const reAlphabet2=[        
+        "ka","ki","ku","ke","ko","sa","si","su","se","so","ta","ti","tu","te","to",
+        "na","ni","nu","ne","no","ha","hi","hu","he","ho","ma","mi","mu","me","mo",
+        "ya","yu","yo",
+        "ra","ri","ru","re","ro","wa","wi","we","wo","vu",
+        "ga","gi","gu","ge","go","za","zi","zu","ze","zo","da","di","du","de","do","ba","bi","bu","be","bo",
+        "pa","pi","pu","pe","po","la","li","lu","le","lo","va","vi","ve","vo",
+        "fa","fi","fe","fo","fu","xa","xi","xu","xe","xo","ji","ca","ci","cu","ce","co","ja","ju","jo",
+        ]
+      const reAlphabet3=[
+        "lya","lyu","lyo","ltu",
+        "kya","kyi","kyu","kye","kyo","sya","syi","syu","sye","syo",
+        "tya","tyi","tyu","tye","tyo","nya","nyi","nyu","nye","nyo","hya","hyi","hyu","hye","hyo",
+        "mya","myi","myu","mye","myo","rya","ryi","ryu","rye","ryo",
+        "gya","gyi","gyu","gye","gyo","zya","zyi","zyu","zye","zyo",
+        "dya","dyi","dyu","dye","dyo","bya","byi","byu","bye","byo","pya","pyi","pyu","pye","pyo",
+        "chi","xya","xyu","xyo","xtu","xtu","cya","cyi","cyu","cye","cyo","tsu","shi",
+      ];
 
-      const simple3 =["lya","lyu","lyo","ltu","zya","zyo","ltu"];        //左 １文字で変わる三文字
-      const another3=["xya","xyu","xyo","xtu","ja","jo","xtu",];
+      const simple2 =["ti","hu","la","li","lu","le","lo","zi","ka","si","ku","se","ko",];　　//左 １文字で変わる二文字
+      const another2=["chi","fu","xa","xi","xu","xe","xo","ji","ca","ci","cu","ce","co",];
+
+      const simple3 =["lya","lyu","lyo","ltu","zya","zyu","zyo","ltu","tya","tyi","tyu","tye","tyo",];        //左 １文字で変わる三文字
+      const another3=["xya","xyu","xyo","xtu","ja","ju","jo","xtu","cya","cyi","cyu","cye","cyo",];
 
       const vowel=["k","s","t","n","h","m","r","g","z","d","b","p",];//母音
+      const consonant=["a","i","u","e","o",];              //子音
+
+      const change= ["ya","yi","yu","ye","yo",];
 
       const SmallYLine=["lya","li","lyu","le","lyo",];　　//小さい や行
 
+      const overlap=[];
+
+      var music = new Audio('type-sound.mp3');
 
       const typedField = document.getElementById("typed");
       const untypedField = document.getElementById("untyped");
@@ -161,12 +259,14 @@
       const countField = document.getElementById("count");
       const description1Field = document.getElementById("description1");
       const description2Field = document.getElementById("description2");
+      const typed_JapaneseField = document.getElementById("typed_Japanese");
       typed = "";
       untyped = "";
       JapaneseWord = "";
-      var count = "";          
+      var count = "";    
+      var muzukashii=3;  
+      var Rcount=0;  
 
-      var front;
 
       //画面表示の変更
       function buttonClick() {
@@ -180,8 +280,10 @@
           finish();
           updateTextField();
         } else if (stage === 2) {   //stage2
+          count="";
           description1 = "１．次へを押し、表示される単語をタイピングする";
           description2 = "２．全部で３０問あります";
+          typed_Japanese="";
           JapaneseWord = "３．次へを押したら始まる";
           untyped = "";
           stage = 0;
@@ -189,14 +291,14 @@
         }
       }
 
-      function sleep(waitMsec) {
-        var startMsec = new Date();
-        // 指定ミリ秒間だけループさせる（CPUは常にビジー状態）
+      function sleep(waitMsec) {           
+        var startMsec = new Date();    //指定ミリ秒間だけループさせる（CPUは常にビジー状態） 
+
         while (new Date() - startMsec < waitMsec);
       }
 
       function reset(){
-        UsedWord.length=0;
+        overlap.length=0;
         description1 = "";
         description2 = "";
         count = 1;
@@ -206,20 +308,20 @@
         average=0;
         MissAnswerRate=0;
         CorrectAnswerRate=0;
-        front= 100;
       }
 
       //終わった時
       function finish() {
+        typed_Japanese="";
         typeEND = new Date();
         var keika = typeEND - typeSTART;　　　//タイムの計算
         var sec = Math.floor(keika / 1000);  
         var msec = keika % 1000;
-        sec2=sec;
-        min = Math.floor(sec / 60); 
+        sec2=sec;                             //sec2いったん置いとく
+        var min = Math.floor(sec / 60); 
         sec = sec % 60;
 
-        var total = miss+correct;
+        var total = miss+correct;　　　　　　　　　//確率の計算に必要
 
         if(correct==0){
           CorrectAnswerRate=0;
@@ -232,12 +334,17 @@
           CorrectAnswerRate =Math.round((1 - MissAnswerRate)*10000)/10000;
           CorrectAnswerRate =CorrectAnswerRate*100;
           CorrectAnswerRate = Math.round(CorrectAnswerRate*100)/100;
-          average=Math.round(correct/sec2*10)/10;                         //平均キータイプ数
+          average=Math.round(correct/sec2*10)/10;                      //平均キータイプ数
+        }
+
+        var AverageDot = String(average);
+        if(AverageDot.substring(1,2)!=="."){
+          AverageDot +=".0"
         }
 
         description1 = "結果発表";
         description2 = "正タイプ率:" + CorrectAnswerRate+ " %";
-        JapaneseWord = "平均キータイプ数:" + average+ "回/秒";
+        JapaneseWord = "平均キータイプ数:" + AverageDot + "回/秒";
         typed = " ";
         untyped = "タイム:" + min + "分" + sec + "秒" + msec;
         stage = 2;
@@ -256,40 +363,51 @@
         countField.textContent = count;
         description1Field.textContent = description1;
         description2Field.textContent = description2;
+        typed_JapaneseField.textContent = typed_Japanese;
       }
 
-      //次の問題を決める
-      function next() {
-        var idx = randomInt(word3.length);
-
-        for( ; ; ){
-          if(idx != front)break;
-            var idx = randomInt(word3.length);    
-            }
-          if (10 >= count) {
+    //次の問題を決める
+    function next() {
+      for(;;){
+        var idx=randomInt(word3.length);
+        if (10 >= count) {
               JapaneseWord = word3[idx];　　//3文字の単語
-          } else if (20 >= count) {
+        } else if (20 >= count) {
               JapaneseWord = word4[idx];　　//4文字の単語
-          } else if (30 >= count) {       //5文字の単語
-              JapaneseWord = word5[idx];
-          }
-            front=idx;
+        } else if (30 >= count) {      
+              JapaneseWord = word5[idx];   //5文字の単語
+        }
 
-        mondaibun=JapaneseWord;
+        for(i=0;i<overlap.length;i++){　　　//一回でた文字を出さないようにする
+          if(JapaneseWord!==overlap[i]){
+            mCount +=1;
+          }
+        }
+          if(mCount===overlap.length){
+            overlap.push(JapaneseWord);
+            seisei();
+            mCount=0;
+            return;
+          }
+          mCount=0;
+      }
+    }
+
+    function seisei(){                       //文字をローマ字の文字列に変化
+      mondaibun=JapaneseWord;
         if(mondaibun===JapaneseWord){
         }
-      
 
-        var stopsan=untyped;
+        var stopsan=untyped;　　　　　　　　 
 
-        for(var j = 0; j < 5; j++){
-          stopsan=untyped;
+        for(var j = 0; j < 5; j++){　　　　　//最大５文字
+          stopsan=untyped;　
           if(mondaibun!==""){
 
-            if("っ"===mondaibun.substring(0,1)){　　　　　//１文字目が「"っ"＋kana2」だった時の処理
+            if("っ"===mondaibun.substring(0,1)){　　　　　//１文字目が「"っ"＋hira2」だった時の処理
             　
-              for(var i = 0; i < kana2.length; i++){
-                if(kana2[i]===mondaibun.substring(1, 3)){
+              for(var i = 0; i < hira2.length; i++){
+                if(hira2[i]===mondaibun.substring(1, 3)){
                   untyped += alphabet2[i].substring(0,1)+alphabet2[i];
                   mondaibun = mondaibun.substring(3);
                   i= 200;
@@ -297,8 +415,8 @@
               }
 
               if(stopsan===untyped){
-                for(var i = 0; i < kana1.length; i++){      //１文字目が「"っ"＋kana1」だった時の処理　
-                  if(kana1[i]===mondaibun.substring(1, 2)){
+                for(var i = 0; i < hira1.length; i++){      //１文字目が「っ」　＋hira1」だった時の処理　
+                  if(hira1[i]===mondaibun.substring(1, 2)){
                     untyped += alphabet1[i].substring(0,1)+alphabet1[i];
                     mondaibun = mondaibun.substring(2);
                     i= 200;
@@ -308,7 +426,50 @@
             }
 
             if(stopsan===untyped){
-              for(var i = 0; i < kana2.length; i++){        //
+              for(var i = 0; i < hira2.length; i++){        //「きゃ」などの2文字
+                if(hira2[i]===mondaibun.substring(0, 2)){
+                  untyped += alphabet2[i];
+                  mondaibun = mondaibun.substring(2);
+                  i= 200;
+                }
+              }
+            }
+
+            if(stopsan===untyped){
+              for(var i = 0; i < hira1.length; i++){
+                if(hira1[i]===mondaibun.substring(0, 1)){　　//１文字
+                  untyped += alphabet1[i];
+                  mondaibun = mondaibun.substring(1);
+                  i= 200;
+                }
+              }
+
+            }
+            if("ッ"===mondaibun.substring(0,1)){　　　　　//１文字目が「"っ"＋hira2」だった時の処理
+            if(stopsan===untyped){
+              for(var i = 0; i < kana2.length; i++){
+                if(kana2[i]===mondaibun.substring(1, 3)){
+                  untyped += alphabet2[i].substring(0,1)+alphabet2[i];
+                  mondaibun = mondaibun.substring(3);
+                  i= 200;
+                }
+              }
+            }
+
+              if(stopsan===untyped){
+                for(var i = 0; i < kana1.length; i++){      //１文字目が「っ」または「ッ」　＋hira1」だった時の処理　
+                  if(kana1[i]===mondaibun.substring(1, 2)){
+                    untyped += alphabet1[i].substring(0,1)+alphabet1[i];
+                    mondaibun = mondaibun.substring(2);
+                    i= 200;
+                  }
+                }
+              }
+            }
+          
+
+            if(stopsan===untyped){
+              for(var i = 0; i < kana2.length; i++){        //「きゃ」などの2文字
                 if(kana2[i]===mondaibun.substring(0, 2)){
                   untyped += alphabet2[i];
                   mondaibun = mondaibun.substring(2);
@@ -319,7 +480,7 @@
 
             if(stopsan===untyped){
               for(var i = 0; i < kana1.length; i++){
-                if(kana1[i]===mondaibun.substring(0, 1)){
+                if(kana1[i]===mondaibun.substring(0, 1)){　　//１文字
                   untyped += alphabet1[i];
                   mondaibun = mondaibun.substring(1);
                   i= 200;
@@ -328,10 +489,204 @@
             }
           }
         }
+        group_back2="";
+        group_back3="";
+        group_back4="";
+        typed_Japanese="";
         typed = "";
         updateTextField();
       }
 
+
+      function ReMondaibun(){
+        Rcount=0;
+        var back  = typed.slice(-1);
+        var back2 = typed.slice(-2,-1);
+        var back3 = typed.slice(-3,-2);
+        var back4 = typed.slice(-4,-3);
+        var group_back3=back3+back2+back;
+        var group_back2=back2+back;
+        if(back==="a"||back==="i"||back==="u"||back==="e"||back==="o"||back==="n"){
+
+        if(back2===back3||back3===back4&&back2!==""&&back3!==""){
+          if(Rcount===0){
+          for(i=0;i<reAlphabet3.length;i++){                              //アルファベット３文字で日本語が赤くなる（ひら
+            if(reAlphabet3[i]===group_back3){
+              if(JapaneseWord.substring(1,2)===ReHira3[i]){
+                typed_Japanese+=JapaneseWord.substring(0,2);
+                JapaneseWord= JapaneseWord.substring(2);
+                Rcount=1;
+              }else if(JapaneseWord.substring(1,3)===ReHira3[i]){
+                typed_Japanese+=JapaneseWord.substring(0,3);
+                JapaneseWord= JapaneseWord.substring(3);
+                Rcount=1;
+              }
+            }
+          }
+        }
+
+        if(Rcount===0){
+          for(i=0;i<reAlphabet2.length;i++){　　　　　　　　　　　　　　　　//アルファベット２文字で日本語が赤くなる（ひら
+            if(reAlphabet2[i]===group_back2){
+              if(JapaneseWord.substring(1,2)===ReHira2[i]){
+                typed_Japanese += JapaneseWord.substring(0,2);
+                JapaneseWord= JapaneseWord.substring(2);
+                Rcount=1;
+              }else if(JapaneseWord.substring(1,3)===ReHira2[i]){
+                typed_Japanese+=JapaneseWord.substring(0,3);
+                JapaneseWord= JapaneseWord.substring(3);
+                Rcount=1;
+              }
+            }
+          }
+        }
+        if(Rcount===0){
+          if(group_back3!=="n"){
+            for(i=0;i<reAlphabet1.length;i++){　　　　　　　　　　　　　　//アルファベット１文字で日本語が赤くなる（ひら
+            if(reAlphabet1[i]===back);
+              if(JapaneseWord.substring(1,2)===ReHira1[i]){
+                typed_Japanese+=JapaneseWord.substring(0,1);
+                JapaneseWord= JapaneseWord.substring(1);
+                Rcount=1;
+              }
+            }
+          }
+        }
+        if(back2===back3||back3===back4&&back2!==""&&back3!==""){
+          if(Rcount===0){
+          for(i=0;i<reAlphabet3.length;i++){                              //アルファベット３文字で日本語が赤くなる（カタ
+            if(reAlphabet3[i]===group_back3){
+              if(JapaneseWord.substring(1,2)===Rekana3[i]){
+                typed_Japanese+=JapaneseWord.substring(0,2);
+                JapaneseWord= JapaneseWord.substring(2);
+                Rcount=1;
+              }else if(JapaneseWord.substring(1,3)===Rekana3[i]){
+                typed_Japanese+=JapaneseWord.substring(0,3);
+                JapaneseWord= JapaneseWord.substring(3);
+                Rcount=1;
+              }
+            }
+          }
+        }
+
+        if(Rcount===0){
+          for(i=0;i<reAlphabet2.length;i++){　　　　　　　　　　　　　　　　//アルファベット２文字で日本語が赤くなる（カタ
+            if(reAlphabet2[i]===group_back2){
+              if(JapaneseWord.substring(1,2)===Rekana2[i]){
+                typed_Japanese += JapaneseWord.substring(0,2);
+                JapaneseWord= JapaneseWord.substring(2);
+                Rcount=1;
+              }else if(JapaneseWord.substring(1,3)===Rekana2[i]){
+                typed_Japanese+=JapaneseWord.substring(0,3);
+                JapaneseWord= JapaneseWord.substring(3);
+                Rcount=1;
+              }
+            }
+          }
+        }
+        if(Rcount===0){
+          if(group_back3!=="n"){
+            for(i=0;i<reAlphabet1.length;i++){　　　　　　　　　　　　　　//アルファベット１文字で日本語が赤くなる
+            if(reAlphabet1[i]===back){
+              if(JapaneseWord.substring(1,2)===Rekana1[i]){
+                typed_Japanese+=JapaneseWord.substring(0,1);
+                JapaneseWord= JapaneseWord.substring(1);
+                Rcount=1;
+              }
+            }
+            }
+          }
+        }
+      }
+    }
+      
+
+      if(Rcount===0){
+          for(i=0;i<reAlphabet3.length;i++){                              //アルファベット３文字で日本語が赤くなる
+            if(reAlphabet3[i]===group_back3){
+              if(JapaneseWord.substring(0,1)===ReHira3[i]){
+                typed_Japanese+=JapaneseWord.substring(0,1);
+                JapaneseWord= JapaneseWord.substring(1);
+                Rcount=1;
+              }else if(JapaneseWord.substring(0,2)===ReHira3[i]){
+                typed_Japanese+=JapaneseWord.substring(0,2);
+                JapaneseWord= JapaneseWord.substring(2);
+                Rcount=1;
+              }
+            }
+          }
+        }
+      }
+
+        if(Rcount===0){
+          for(i=0;i<reAlphabet2.length;i++){　　　　　　　　　　　　　　　　//アルファベット２文字で日本語が赤くなる
+            if(reAlphabet2[i]===group_back2){
+              if(JapaneseWord.substring(0,1)===ReHira2[i]){
+                typed_Japanese += JapaneseWord.substring(0,1);
+                JapaneseWord= JapaneseWord.substring(1);
+                Rcount=1;
+              }else if(JapaneseWord.substring(0,2)===ReHira2[i]){
+                typed_Japanese+=JapaneseWord.substring(0,2);
+                JapaneseWord= JapaneseWord.substring(2);
+                Rcount=1;
+              }
+            }
+          }
+        }
+        if(Rcount===0){
+            for(i=0;i<reAlphabet1.length;i++){　　　　　　　　　　　　　　//アルファベット１文字で日本語が赤くなる
+            if(reAlphabet1[i]===back){
+              if(JapaneseWord.substring(0,1)===ReHira1[i]){
+                typed_Japanese+=JapaneseWord.substring(0,1);
+                JapaneseWord= JapaneseWord.substring(1);
+                Rcount=1;
+              }
+            }
+          }
+        }
+        if(Rcount===0){
+          for(i=0;i<reAlphabet3.length;i++){                              //アルファベット３文字で日本語が赤くなる(カタ)
+            if(reAlphabet3[i]===group_back3){
+              if(JapaneseWord.substring(0,1)===Rekana3[i]){
+                typed_Japanese+=JapaneseWord.substring(0,1);
+                JapaneseWord= JapaneseWord.substring(1);
+                Rcount=1;
+              }else if(JapaneseWord.substring(0,2)===Rekana3[i]){
+                typed_Japanese+=JapaneseWord.substring(0,2);
+                JapaneseWord= JapaneseWord.substring(2);
+                Rcount=1;
+              }
+            }
+          }
+        }
+
+        if(Rcount===0){
+          for(i=0;i<reAlphabet2.length;i++){　　　　　　　　　　　　　　　　//アルファベット２文字で日本語が赤くなる（カタ）
+            if(reAlphabet2[i]===group_back2){
+              if(JapaneseWord.substring(0,1)===Rekana2[i]){
+                typed_Japanese += JapaneseWord.substring(0,1);
+                JapaneseWord= JapaneseWord.substring(1);
+                Rcount=1;
+              }else if(JapaneseWord.substring(0,2)===Rekana2[i]){
+                typed_Japanese+=JapaneseWord.substring(0,2);
+                JapaneseWord= JapaneseWord.substring(2);
+                Rcount=1;
+              }
+            }
+          }
+        }
+        if(Rcount===0){
+            for(i=0;i<reAlphabet1.length;i++){　　　　　　　　　　　　　　//アルファベット１文字で日本語が赤くなる（カタ）
+            if(reAlphabet1[i]===back){
+              if(JapaneseWord.substring(0,1)===Rekana1[i]){
+                typed_Japanese+=JapaneseWord.substring(0,1);
+                JapaneseWord= JapaneseWord.substring(1);
+                Rcount=1;
+              }
+            }
+          }
+        }
+      }
 
       //タイピングゲームの処理
 document.addEventListener('keydown',function(e){
@@ -362,15 +717,11 @@ document.addEventListener('keydown',function(e){
             if(untyped.substring(0,1)==="n"){
               typed+=untyped.substring(0,1);
               untyped=untyped.substring(1);
-              correct+=1;
-              updateTextField();
-              return;
+              saccess();
             }
             else if(untyped.substring(0,1)!=="n"){
               typed+="n";
-              correct+=1;
-              updateTextField();
-              return;
+              saccess();
             }
           }
         }
@@ -381,9 +732,7 @@ document.addEventListener('keydown',function(e){
           ||untyped.substring(0,1)==="u"||untyped.substring(0,1)==="e"||untyped.substring(0,1)==="o"){
           if(e.key==="n"){
             typed+="n";
-            correct+=1;
-            updateTextField();
-            return;
+            saccess();
           }
         }
       }
@@ -398,9 +747,7 @@ document.addEventListener('keydown',function(e){
           untyped=another3[i] + untyped;
           typed += untyped.substring(0, 1);　　//正しくタイピングしたとき
           untyped = untyped.substring(1);
-          correct +=  1;
-          updateTextField();
-          return;
+          saccess();
         }
       }
     }
@@ -412,9 +759,7 @@ document.addEventListener('keydown',function(e){
           untyped=another2[i] + untyped;
           typed += untyped.substring(0, 1);　　//正しくタイピングしたとき
           untyped = untyped.substring(1);
-          correct +=  1;
-          updateTextField();
-          return;
+          saccess();
         }
       }
     }
@@ -423,9 +768,19 @@ document.addEventListener('keydown',function(e){
       if(e.key ==="h"){               //siをshiにする処理
         if(untyped.substring(0,1)==="i"){
           typed +="h";
-          correct +=  1;
-          updateTextField();
-          return;
+          saccess();
+        }
+      }
+      if(untyped.substring(0,1) ==="y"){              //sya　→　shi + lya　にする
+          for(i=0;i<SmallYLine.length;i++){
+            if(untyped.substring(0,2)===change[i]){
+              if(e.key==="h"){
+              typed += "h";
+              untyped = untyped.slice(2);
+              untyped= "i"+SmallYLine[i]+untyped;
+              saccess();
+            }
+          }
         }
       }
     }
@@ -434,9 +789,21 @@ document.addEventListener('keydown',function(e){
       if(e.key==="s"){
         if(untyped.substring(0,1)==="u"){
           typed+="s";
-          correct +=  1;
-          updateTextField();
-          return;
+          saccess();
+        }
+      }
+    }
+
+    if(back==="c"){
+      if(untyped.substring(0,1)==="y"){
+        for(i=0;i<SmallYLine.length;i++){
+          if(untyped.substring(0,2)===change[i]){
+            if(e.key==="h"){
+              typed+="h";
+              untyped=untyped.substring(2);
+              untped="i"+SmallYLine[i]+untyped;
+          }
+          }
         }
       }
     }
@@ -445,9 +812,7 @@ document.addEventListener('keydown',function(e){
       typed+=e.key;
       untyped=untyped.slice(2);
       untyped="tu"+untyped;
-      correct +=1;
-      updateTextField();
-      return;
+      saccess();
     };
 
     if(untyped.substring(0,1)===untyped.substring(1,2)){
@@ -476,9 +841,7 @@ document.addEventListener('keydown',function(e){
                 typed+="i";
                 untyped=untyped.slice(2);
                 untyped=SmallYLine[j]+untyped;
-                correct +=  1;
-                updateTextField();
-                return;
+                saccess();
               }
             }
           }
@@ -490,8 +853,7 @@ document.addEventListener('keydown',function(e){
       if (e.key === untyped.substring(0, 1)) {　　//アルファベットが２回続く時、処理を遅らせる　例）natto
         typed += untyped.substring(0, 1);　　//正しくタイピングしたとき
         untyped = untyped.substring(1);
-        correct +=  1;
-        updateTextField();
+        saccess();
         sleep(50);
         return;
       }
@@ -504,8 +866,7 @@ document.addEventListener('keydown',function(e){
     }
     typed += untyped.substring(0, 1);　　//正しくタイピングしたとき
     untyped = untyped.substring(1);
-    correct +=  1;
-    updateTextField();
+    saccess();
 
     if (untyped === "") {         //１単語を打ち終わった時の処理
       if (count >= 30) {
@@ -518,7 +879,14 @@ document.addEventListener('keydown',function(e){
     }
   }
 });
-      //next();
+function saccess(){    //正しくタイプできたとき
+    ReMondaibun();
+    updateTextField();
+    correct +=  1;
+    music.play();
+    music.currentTime = 0;
+    updateTextField();
+}
     </script>
   </body>
 </html>
